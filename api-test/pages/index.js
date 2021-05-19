@@ -1,51 +1,114 @@
-import {useCallback,useEffect,useState} from 'react'
-import { ProjectList } from "../components/ProjectList"
+import {useState} from "react";
+
+
 
 export default function Home() {
-  const [ platformList, setPlatformList] = useState([])
-  const [loading,setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
+    const [error,setError] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [packageName,setPackegeName] = useState('')
+    const [platformName,setPlatformName] = useState('')
+    const [packageVersion,setPackageVersion] = useState("")
+    const [apiKey, setApiKey] = useState("")
 
 
-  const fetchPlatforms = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+
+  const fetchProjectDependencies = async (name, platform) => {
+     setLoading(loading)
+      setError(null);
+      
+      
+     
+      const url = `https://libraries.io/api/${platform}/${name}?api_key=${process.env.API_KEY}`
+      
     try {
-      const response = await fetch(`https://libraries.io/api/platforms?api_key=${process.env.API_KEY}`)
+      const response = await fetch(url)
 
       if (!response.ok) {
-        throw new Error('Something went wrong!');
+        throw new Error('Something went wrong or this packeg is not exits!!');
       }
 
       const data = await response.json();
 
-      setPlatformList(data)
+      console.log("Data: ", data)
   
     } catch (error) {
-      setError(error.message);
+        setError(error.message);
+        setLoading(false)
     }
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchPlatforms();
-  },[fetchPlatforms]);
+      
+      setLoading(false)
   
+  }
+    
 
-  // List of all platforms
-  const platfromNameList = platformList.length > 0 ? platformList.map(platformList => <ProjectList
-      key={platformList.project_count}
-      homepage={platformList.homepage}
-      name={platformList.name}
-      default_language={platformList.default_language}/> ) : <p>"List is empty"</p>
+    const submitUserRequest = (event) => {
+        event.preventDefault();
+        console.log("PackageName: ",{
+            packageName: packageName,
+            platformName: platformName
+        })
+      
+        fetchProjectDependencies(packageName, platformName)
+    }
 
-  
-  console.log("Data: ", platformList)
 
-  return (
-    <div>
-      <h1>API LIST Packages</h1>
-      {loading ? "List is loading...." : <ul>{platfromNameList}</ul>}
-    </div>
-  )
+    return (
+        <div style={{textAlign: 'center'}}>
+            <h1>Check Your Package</h1>
+           <section>
+                <h1>How can I help you?</h1>
+                
+                <form onSubmit={submitUserRequest} >
+        <div>
+          <div>
+            <label htmlFor="name">Package Name</label>
+            <input
+              type="text"              
+              placeholder="base62"           
+              value={packageName}
+              required
+              onChange={(event) => setPackegeName(event.target.value)}
+            />
+          </div>
+          <div>
+            <label htmlFor="name">Platform</label>
+            <input
+              type="text"
+              placeholder="NPM"
+             
+              value={platformName}
+              required
+              onChange={(event) => setPlatformName(event.target.value)}
+            />
+         </div>
+            <div>
+            <label htmlFor="name">Version</label>
+            <input
+              type="text"
+              placeholder="0.2.2"
+             
+              value={packageVersion}
+              onChange={(event) => setPackageVersion(event.target.value)}
+            />
+         </div>
+          <div>
+            <label htmlFor="name">API_KEY</label>
+            <input
+              type="text"
+              placeholder="834944555kjkj"
+             
+              value={apiKey}
+              onChange={(event) => setApiKey(event.target.value)}
+            />
+          </div>               
+        </div>
+        <div>
+          <button>Submit</button>
+        </div>
+                </form>
+        {loading ? <p>Loading</p> : null }
+                {error ? <p>{error}</p> : null }
+    </section>
+        </div>
+    )
 }

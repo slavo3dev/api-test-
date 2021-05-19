@@ -1,4 +1,5 @@
-import {Fragment, useEffect, useState} from "react";
+import {Fragment,useEffect,useState} from "react";
+import { useRouter } from 'next/router'
   
 
 export default function() {
@@ -9,6 +10,8 @@ export default function() {
     const fetchPlatforms = async () => {
     
     // https://libraries.io/api/:platform/:name?api_key=
+        
+   const router = useRouter
   
     setError(null);
     try {
