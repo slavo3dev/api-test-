@@ -13,7 +13,7 @@ export default function HeadeNavigation() {
 			<nav>
 				<ul>
 					<li>
-						<Link href="/platforms-list">
+						<Link href="/platform-list">
 							<a>
 								<p>Platfrom List</p>
 							</a>
