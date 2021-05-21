@@ -1,5 +1,7 @@
 {
-  "semi": true,
-  "trailingComma": "all",
-  "printWidth": 70
+	"bracketSpacing": true,
+	"useTabs": true,
+	"tabWidth": 2,
+	"trailingComma": "all",
+	"printWidth": 70
 }
